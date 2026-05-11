@@ -30,14 +30,20 @@ export const CACHE_TTL = {
 
 export const FETCH_CONCURRENCY = 6;
 
-const env = import.meta.env;
-const envCreds: RappiCredentials | null =
-  env.VITE_RAPPI_AUTH && env.VITE_RAPPI_DEVICEID
-    ? {
-        authorization: env.VITE_RAPPI_AUTH,
-        deviceid: env.VITE_RAPPI_DEVICEID,
-        app_version: env.VITE_RAPPI_APP_VERSION || "1.161.2",
-      }
-    : null;
+// Public demo credentials shipped with Rappify. The account is intentionally
+// shared so anyone cloning the repo can run the app without setup.
+// Override locally via .env.local (VITE_RAPPI_AUTH / VITE_RAPPI_DEVICEID)
+// or via the in-app Settings modal (which writes to localStorage).
+const DEFAULT_CREDENTIALS: RappiCredentials = {
+  authorization:
+    "Bearer ft.gAAAAABqAT9PTKJBPGQbN7deggGuHjK2VSJYG3-NjP2WNuTxD04PL_FmIup3nZ6w9Aivcob5b-52qdkVtKSThiPLawGMl1f3HOGsuapTCMfOvpVeELYNdVrbTbFW-Ymu35F5hy6dh_SRQ1yfR7zCfjXCbCZCCsuXhWxN__ftSuAozdHq3EOtvlOzP2EvGSQDzJk4nazXuGnsruEqd1ohwqLtcrPzQNRLg6YFy9VCMIzp1hz3vjBdYwSCJPq_7WBqLhBqSrtZ7B5LhomHN8C5ZWg7BUXxfW8gCgJO1oQzgMc1R3zn9X4L8mxeq0ndUoP-kVO1Zy7m-redFPxakzrxBjHT0CkR0N4cd-bUcEt7i1IzRKa19_pOW7TXcOQniVvUb6Q5ocluQ3_87qWvu7VvItD_rxCK788Beg==",
+  deviceid: "1a20f853-4810-4017-a413-634e18698b64R",
+  app_version: "1.161.2",
+};
 
-export const FALLBACK_CREDENTIALS: RappiCredentials | null = envCreds;
+const env = import.meta.env;
+export const FALLBACK_CREDENTIALS: RappiCredentials = {
+  authorization: env.VITE_RAPPI_AUTH || DEFAULT_CREDENTIALS.authorization,
+  deviceid: env.VITE_RAPPI_DEVICEID || DEFAULT_CREDENTIALS.deviceid,
+  app_version: env.VITE_RAPPI_APP_VERSION || DEFAULT_CREDENTIALS.app_version,
+};
