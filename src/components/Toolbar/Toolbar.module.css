@@ -1,0 +1,123 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 24px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 60px;
+  z-index: 20;
+}
+
+.search {
+  flex: 1 1 280px;
+  min-width: 220px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search svg {
+  position: absolute;
+  left: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.search input {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
+}
+.search input:focus {
+  border-color: var(--rappi-orange);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--rappi-orange-soft);
+}
+
+.sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sort label {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.sort select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text);
+  transition: border-color 0.15s var(--ease-out);
+}
+.sort select:hover {
+  border-color: var(--border-strong);
+}
+.sort select:focus {
+  outline: none;
+  border-color: var(--rappi-orange);
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s var(--ease-out);
+}
+.chip:hover {
+  border-color: var(--rappi-orange-tint);
+  color: var(--text);
+}
+.chip input {
+  display: none;
+}
+.chipOn {
+  background: var(--rappi-orange-soft);
+  border-color: var(--rappi-orange);
+  color: var(--rappi-orange);
+  font-weight: 600;
+}
+
+.count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.countDim {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+@media (max-width: 720px) {
+  .bar {
+    top: 0;
+    padding: 12px 16px;
+  }
+  .count {
+    margin-left: 0;
+  }
+}

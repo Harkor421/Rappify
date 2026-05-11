@@ -1,0 +1,131 @@
+.wrapper {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.banner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.headline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.dots {
+  display: inline-flex;
+  gap: 4px;
+}
+.dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--rappi-orange);
+  animation: bounce 1.2s ease-in-out infinite;
+}
+.dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+.progressTrack {
+  height: 6px;
+  background: var(--surface-3);
+  border-radius: 999px;
+  margin-top: 14px;
+  overflow: hidden;
+}
+.progressBar {
+  height: 100%;
+  background: var(--gradient-orange);
+  border-radius: 999px;
+}
+.progressLabel {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.preview,
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  padding: 0 0 14px;
+}
+.skelImg {
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 0%,
+    var(--surface-3) 50%,
+    var(--surface-2) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+.skelLine {
+  height: 12px;
+  background: var(--surface-3);
+  border-radius: 6px;
+  margin: 12px 14px 0;
+}
+.skelStore {
+  height: 18px;
+  background: var(--surface-3);
+  border-radius: 6px;
+  margin: 14px 14px 0;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .preview,
+  .skeletonGrid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+}

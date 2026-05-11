@@ -1,0 +1,17 @@
+node_modules
+dist
+.DS_Store
+*.log
+.env
+.env.local
+.env.*.local
+
+# Legacy local-only artifacts
+legacy/headers.json
+legacy/out
+out
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea

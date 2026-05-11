@@ -1,0 +1,62 @@
+.wrap {
+  position: sticky;
+  top: 60px;
+  z-index: 25;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 24px 10px;
+}
+
+.track {
+  position: relative;
+  height: 3px;
+  background: var(--surface-3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: var(--gradient-orange);
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(255, 110, 0, 0.5);
+}
+
+.indeterminate {
+  position: absolute;
+  inset: 0;
+  width: 35%;
+  background: var(--gradient-orange);
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(255, 110, 0, 0.5);
+  animation: slide 1.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes slide {
+  0% {
+    left: -35%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.label {
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sep {
+  color: var(--text-muted);
+  margin: 0 2px;
+}
+
+.count {
+  color: var(--text);
+  font-weight: 600;
+}

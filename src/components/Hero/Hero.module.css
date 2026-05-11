@@ -1,0 +1,177 @@
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px 64px;
+  min-height: 92vh;
+  text-align: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  max-width: 640px;
+  width: 100%;
+}
+
+.title {
+  margin: 8px 0 0;
+  font-size: clamp(38px, 6vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--text);
+}
+.titleAccent {
+  background: var(--gradient-orange);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: clamp(15px, 2vw, 17px);
+  color: var(--text-dim);
+  line-height: 1.55;
+  max-width: 480px;
+}
+
+.searchBox {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.hint {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
+}
+
+/* Compact (sticky header after search) */
+.compact {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.compactInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.compactBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: none;
+  padding: 4px 8px 4px 4px;
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--text);
+  transition: background 0.15s var(--ease-out);
+}
+.compactBrand:hover {
+  background: var(--surface-2);
+}
+.compactTitle {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.compactRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.compactRefresh {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
+}
+.compactRefresh:hover:not(:disabled) {
+  background: var(--rappi-orange-soft);
+  border-color: var(--rappi-orange-tint);
+  color: var(--rappi-orange);
+}
+.compactRefresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.compactAddress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--text);
+  max-width: 60%;
+  cursor: pointer;
+  transition: background 0.15s var(--ease-out), border-color 0.15s var(--ease-out);
+}
+.compactAddress:hover {
+  background: var(--rappi-orange-soft);
+  border-color: var(--rappi-orange-tint);
+}
+.compactPin {
+  flex-shrink: 0;
+  color: var(--rappi-orange);
+}
+.compactAddrText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+.compactChange {
+  color: var(--rappi-orange);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .compactAddrText {
+    max-width: 140px;
+  }
+}

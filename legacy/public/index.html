@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ofertas Rappi</title>
+  <link rel="preconnect" href="https://images.rappi.com" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo-dot"></span>
+      <h1>Ofertas Rappi</h1>
+    </div>
+    <div class="meta">
+      <div class="tabs">
+        <button class="tab" data-view="stores">Tiendas</button>
+        <button class="tab active" data-view="products">Productos</button>
+      </div>
+      <span id="meta-count" class="meta-pill">—</span>
+      <span id="meta-cache" class="meta-pill subtle">—</span>
+      <button id="refresh" class="btn-ghost" title="Forzar refresh">↻</button>
+    </div>
+  </header>
+
+  <section class="toolbar hidden" data-view="stores">
+    <input id="search" type="search" placeholder="Buscar restaurante..." autocomplete="off" />
+
+    <div class="control">
+      <label>Ordenar por</label>
+      <select id="sort">
+        <option value="discount_pct">Mayor % descuento</option>
+        <option value="discount_value">Mayor $ descuento</option>
+        <option value="free_shipping">Envío gratis primero</option>
+        <option value="rating">Mejor calificación</option>
+        <option value="eta">Menor tiempo</option>
+        <option value="distance">Más cercano</option>
+        <option value="delivery_price">Envío más barato</option>
+      </select>
+    </div>
+
+    <div class="filters">
+      <label class="chip"><input type="checkbox" id="f-discount" checked /> Solo con promo</label>
+      <label class="chip"><input type="checkbox" id="f-free" /> Envío gratis</label>
+      <label class="chip"><input type="checkbox" id="f-open" checked /> Abiertos</label>
+      <label class="chip"><input type="checkbox" id="f-exclusive" /> Exclusivo Rappi</label>
+    </div>
+  </section>
+
+  <section class="toolbar" data-view="products">
+    <input id="search-p" type="search" placeholder="Buscar producto o restaurante..." autocomplete="off" />
+
+    <div class="control">
+      <label>Ordenar por</label>
+      <select id="sort-p">
+        <option value="discount_pct">Mayor % descuento</option>
+        <option value="discount_abs">Mayor ahorro $</option>
+        <option value="price_asc">Precio más bajo</option>
+        <option value="price_desc">Precio más alto</option>
+        <option value="rating">Mejor restaurante</option>
+        <option value="popular">Populares primero</option>
+      </select>
+    </div>
+
+    <div class="filters">
+      <label class="chip"><input type="checkbox" id="f-popular" /> Populares</label>
+      <label class="chip"><input type="checkbox" id="f-free-p" /> Envío gratis (tienda)</label>
+      <label class="chip"><input type="checkbox" id="f-prime" /> Solo Prime</label>
+    </div>
+  </section>
+
+  <main id="grid" class="grid hidden"></main>
+  <main id="grid-p" class="grid grid-products"></main>
+
+  <div id="loader" class="loader hidden">Cargando ofertas...</div>
+  <div id="error" class="error hidden"></div>
+
+  <dialog id="detail">
+    <button class="dialog-close" data-close>×</button>
+    <div id="detail-content"></div>
+  </dialog>
+
+  <script src="/app.js"></script>
+</body>
+</html>

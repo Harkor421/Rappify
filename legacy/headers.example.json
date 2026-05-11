@@ -1,0 +1,13 @@
+{
+  "authorization": "Bearer PEGA_AQUI_TU_TOKEN",
+  "deviceid": "pega-aqui-tu-deviceid",
+  "app-version": "web-v1.0.0",
+  "app-version-name": "web",
+  "x-application-id": "web-proxy-api-gateway-co/v2.20.0",
+  "accept": "application/json",
+  "accept-language": "es-419,es;q=0.9",
+  "content-type": "application/json",
+  "origin": "https://www.rappi.com.co",
+  "referer": "https://www.rappi.com.co/",
+  "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+}

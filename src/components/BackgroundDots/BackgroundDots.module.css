@@ -1,0 +1,78 @@
+.bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  --mx: 50vw;
+  --my: 50vh;
+  --cursor-active: 0;
+}
+
+/* Base layer: subtle gray dots covering the viewport, fading at the edges */
+.dotsBase {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(95, 105, 122, 0.24) 1px, transparent 1.4px);
+  background-size: 18px 18px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 90% 95% at 50% 45%,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.85) 50%,
+    rgba(0, 0, 0, 0.35) 80%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 90% 95% at 50% 45%,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.85) 50%,
+    rgba(0, 0, 0, 0.35) 80%,
+    transparent 100%
+  );
+}
+
+/* Sharp orange dot copy, only the dots near the cursor are revealed */
+.dotsAccent {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255, 110, 0, 1) 1.4px, transparent 1.7px);
+  background-size: 18px 18px;
+  -webkit-mask-image: radial-gradient(
+    circle 200px at var(--mx) var(--my),
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.65) 35%,
+    rgba(0, 0, 0, 0.2) 65%,
+    transparent 85%
+  );
+  mask-image: radial-gradient(
+    circle 200px at var(--mx) var(--my),
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.65) 35%,
+    rgba(0, 0, 0, 0.2) 65%,
+    transparent 85%
+  );
+  opacity: var(--cursor-active);
+  transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Same orange dots but blurred — creates a real per-dot glow halo */
+.dotsHalo {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255, 110, 0, 0.85) 1.6px, transparent 2px);
+  background-size: 18px 18px;
+  filter: blur(3.5px);
+  -webkit-mask-image: radial-gradient(
+    circle 220px at var(--mx) var(--my),
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.4) 45%,
+    transparent 80%
+  );
+  mask-image: radial-gradient(
+    circle 220px at var(--mx) var(--my),
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.4) 45%,
+    transparent 80%
+  );
+  opacity: var(--cursor-active);
+  transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
