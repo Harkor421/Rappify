@@ -1,4 +1,4 @@
-# Contribuir a Rappi Ofertas
+# Contribuir a Rappify
 
 Gracias por tu interés. Este es un proyecto comunitario y open source.
 

@@ -1,4 +1,4 @@
-# Rappi Ofertas
+# Rappify
 
 Descubre los mejores descuentos de Rappi cerca de ti. Aplicación 100% frontend
 — sin backend propio — que consulta directamente la API pública de Rappi desde
