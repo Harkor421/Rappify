@@ -1,6 +1,9 @@
 export {
   AlertTriangle,
+  ArrowUpRight,
+  Clock,
   Crosshair,
+  Flame,
   Heart,
   Lock,
   MapPin,
@@ -8,6 +11,9 @@ export {
   RotateCw,
   Search,
   Settings,
+  SlidersHorizontal,
+  Star,
+  Truck,
   UtensilsCrossed,
   X,
 } from "lucide-react";

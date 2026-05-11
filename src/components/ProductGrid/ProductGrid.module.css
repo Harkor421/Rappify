@@ -1,24 +1,36 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-  padding: 24px;
-  max-width: 1440px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 18px;
+  padding: 28px 28px 80px;
+  max-width: 1480px;
   margin: 0 auto;
   width: 100%;
 }
 
 .empty {
   text-align: center;
-  padding: 80px 24px;
+  padding: 100px 24px;
   color: var(--text-dim);
   font-size: 15px;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+.empty p {
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    padding: 24px;
+    gap: 16px;
+  }
 }
 
 @media (max-width: 600px) {
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
     gap: 12px;
-    padding: 16px;
+    padding: 16px 14px 60px;
   }
 }

@@ -40,7 +40,7 @@ export function ProductGrid({ products, filters }: ProductGridProps) {
   if (filtered.length === 0) {
     return (
       <div className={styles.empty}>
-        <p>Sin productos con esos filtros.</p>
+        <p>Sin productos con esos filtros. Prueba quitando alguno.</p>
       </div>
     );
   }

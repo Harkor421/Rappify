@@ -27,25 +27,28 @@ export function CategoryRow({ products, selected, onChange }: CategoryRowProps) 
   };
 
   return (
-    <div className={styles.wrap}>
-      <button
-        type="button"
-        className={`${styles.chip} ${selected.length === 0 ? styles.chipOn : ""}`}
-        onClick={() => onChange([])}
-      >
-        Todas
-      </button>
-      {categories.map(([cat, count]) => (
+    <div className={styles.outer}>
+      <div className={styles.wrap}>
         <button
-          key={cat}
           type="button"
-          className={`${styles.chip} ${selected.includes(cat) ? styles.chipOn : ""}`}
-          onClick={() => toggle(cat)}
+          className={`${styles.chip} ${styles.allChip} ${selected.length === 0 ? styles.chipOn : ""}`}
+          onClick={() => onChange([])}
         >
-          {cat}
-          <span className={styles.count}>{count}</span>
+          Todas
+          <span className={styles.count}>{products.length}</span>
         </button>
-      ))}
+        {categories.map(([cat, count]) => (
+          <button
+            key={cat}
+            type="button"
+            className={`${styles.chip} ${selected.includes(cat) ? styles.chipOn : ""}`}
+            onClick={() => toggle(cat)}
+          >
+            {cat}
+            <span className={styles.count}>{count}</span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

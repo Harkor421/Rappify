@@ -1,8 +1,8 @@
 .wrapper {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1480px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 28px;
 }
 
 .banner {
@@ -10,7 +10,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px 22px;
-  margin-bottom: 18px;
+  margin-bottom: 22px;
   box-shadow: var(--shadow-sm);
 }
 
@@ -76,8 +76,8 @@
 .preview,
 .skeletonGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 18px;
 }
 
 .skeleton {
@@ -123,9 +123,12 @@
 }
 
 @media (max-width: 600px) {
+  .wrapper {
+    padding: 16px 14px;
+  }
   .preview,
   .skeletonGrid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
     gap: 12px;
   }
 }

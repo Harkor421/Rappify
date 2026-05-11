@@ -1,24 +1,50 @@
+.outer {
+  position: relative;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
 .wrap {
   display: flex;
   gap: 8px;
-  padding: 14px 24px 6px;
+  padding: 16px 28px 14px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  background: var(--bg);
+  scroll-behavior: smooth;
 }
 .wrap::-webkit-scrollbar {
   display: none;
+}
+
+/* Edge fade masks so chips fade as they scroll out of view */
+.outer::before,
+.outer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 1px;
+  width: 32px;
+  pointer-events: none;
+  z-index: 1;
+}
+.outer::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg) 0%, transparent 100%);
+}
+.outer::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg) 0%, transparent 100%);
 }
 
 .chip {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  gap: 7px;
+  padding: 8px 14px;
+  background: var(--surface-2);
+  border: 1px solid transparent;
   color: var(--text-dim);
   border-radius: 999px;
   font-size: 12.5px;
@@ -26,36 +52,57 @@
   cursor: pointer;
   transition: all 0.15s var(--ease-out);
   white-space: nowrap;
+  font-family: inherit;
 }
 .chip:hover {
-  border-color: var(--rappi-orange-tint);
+  background: var(--surface-3);
   color: var(--text);
 }
 
 .chipOn {
-  background: var(--rappi-orange-soft);
-  border-color: var(--rappi-orange);
-  color: var(--rappi-orange);
+  background: var(--gradient-orange);
+  color: #fff;
   font-weight: 600;
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(255, 68, 31, 0.28);
+}
+.chipOn:hover {
+  background: var(--gradient-orange);
+  color: #fff;
+}
+
+.allChip {
+  font-weight: 600;
+}
+.allChip.chipOn {
+  background: var(--text);
+  color: var(--surface);
+  box-shadow: 0 4px 14px rgba(20, 22, 30, 0.18);
 }
 
 .count {
   font-size: 11px;
   font-variant-numeric: tabular-nums;
-  opacity: 0.7;
-  background: var(--surface-2);
+  background: var(--surface);
+  color: var(--text-dim);
   padding: 1px 6px;
   border-radius: 999px;
   min-width: 22px;
   text-align: center;
+  border: 1px solid var(--border);
 }
 .chipOn .count {
-  background: rgba(255, 255, 255, 0.5);
-  color: var(--rappi-orange);
+  background: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.95);
+  border-color: transparent;
+}
+.allChip.chipOn .count {
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 @media (max-width: 720px) {
   .wrap {
-    padding: 12px 16px 4px;
+    padding: 12px 16px 10px;
   }
 }

@@ -1,4 +1,4 @@
-import { Search } from "../icons";
+import { Search, SlidersHorizontal, X } from "../icons";
 import styles from "./Toolbar.module.css";
 
 export type SortMode =
@@ -38,31 +38,43 @@ export function Toolbar({ filters, onChange, total, shown }: ToolbarProps) {
   const update = <K extends keyof Filters>(k: K, v: Filters[K]) =>
     onChange({ ...filters, [k]: v });
 
+  const activeFilterCount =
+    Number(filters.popular) +
+    Number(filters.freeShipping) +
+    Number(filters.prime) +
+    filters.categories.length +
+    (filters.query.trim() ? 1 : 0);
+
+  const clearAll = () =>
+    onChange({
+      ...filters,
+      query: "",
+      popular: false,
+      freeShipping: false,
+      prime: false,
+      categories: [],
+    });
+
   return (
     <div className={styles.bar}>
       <div className={styles.search}>
-        <Search size={16} strokeWidth={2} />
+        <Search size={15} strokeWidth={2} />
         <input
           type="search"
           placeholder="Buscar producto o restaurante…"
           value={filters.query}
           onChange={(e) => update("query", e.target.value)}
         />
-      </div>
-
-      <div className={styles.sort}>
-        <label htmlFor="sort">Ordenar</label>
-        <select
-          id="sort"
-          value={filters.sort}
-          onChange={(e) => update("sort", e.target.value as SortMode)}
-        >
-          {SORT_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
+        {filters.query && (
+          <button
+            type="button"
+            className={styles.clearSearch}
+            onClick={() => update("query", "")}
+            aria-label="Limpiar búsqueda"
+          >
+            <X size={13} strokeWidth={2.2} />
+          </button>
+        )}
       </div>
 
       <div className={styles.chips}>
@@ -77,11 +89,34 @@ export function Toolbar({ filters, onChange, total, shown }: ToolbarProps) {
           onChange={(v) => update("freeShipping", v)}
         />
         <Chip label="Prime" checked={filters.prime} onChange={(v) => update("prime", v)} />
+
+        {activeFilterCount > 0 && (
+          <button type="button" className={styles.clearAll} onClick={clearAll}>
+            Limpiar
+            <X size={12} strokeWidth={2.4} />
+          </button>
+        )}
       </div>
 
-      <div className={styles.count}>
-        <span>{shown.toLocaleString("es-CO")}</span>
-        <span className={styles.countDim}> / {total.toLocaleString("es-CO")}</span>
+      <div className={styles.right}>
+        <div className={styles.count}>
+          <span className={styles.countNum}>{shown.toLocaleString("es-CO")}</span>
+          <span className={styles.countDim}>de {total.toLocaleString("es-CO")}</span>
+        </div>
+
+        <label className={styles.sort}>
+          <SlidersHorizontal size={13} strokeWidth={2} />
+          <select
+            value={filters.sort}
+            onChange={(e) => update("sort", e.target.value as SortMode)}
+          >
+            {SORT_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
     </div>
   );
