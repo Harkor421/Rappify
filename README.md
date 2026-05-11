@@ -19,24 +19,34 @@ el navegador del usuario.
 
 ```bash
 npm install
-cp .env.example .env.local  # opcional: pega tu Bearer/deviceid para dev
 npm run dev
 ```
 
-Abre <http://localhost:3000>. La primera vez te pedirá tus credenciales de
-Rappi (botón de ajustes arriba a la derecha) — ver instrucciones en el modal.
+Abre <http://localhost:3000> y listo — Rappify viene con un **token público de
+demo** ya cableado, así que funciona sin configuración adicional.
 
 ## Credenciales
 
-La API de Rappi requiere un token de sesión por usuario. Cómo obtenerlo:
+Por defecto la app usa una **cuenta pública compartida** (configurada en
+[`src/config.ts`](./src/config.ts)). Si prefieres usar tu propia cuenta:
+
+**Opción A — UI (recomendado):** click en el ícono de ajustes arriba a la
+derecha y pega tu `authorization` y `deviceid`. Se guardan **solo en tu
+navegador** (localStorage).
+
+**Opción B — variables de entorno (dev):** crea un `.env.local`:
+
+```env
+VITE_RAPPI_AUTH=Bearer ft.…
+VITE_RAPPI_DEVICEID=tu-uuid
+```
+
+Cómo obtener un token propio:
 
 1. Abre [rappi.com.co](https://www.rappi.com.co) e inicia sesión.
 2. Abre DevTools (`F12`) → pestaña **Network**.
 3. Refresca y filtra por `filters/`.
-4. Click en cualquier request → en **Headers** copia:
-   - `authorization` (empieza con `Bearer ft.…`)
-   - `deviceid` (UUID)
-5. Pégalos en el botón de ajustes de la app — se guardan **solo en tu navegador**.
+4. Click en cualquier request → en **Headers** copia `authorization` y `deviceid`.
 
 ## Stack
 
