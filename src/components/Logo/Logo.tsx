@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import styles from "./Logo.module.css";
 
 interface LogoProps {
-  size?: number;
+  size?: number | string;
 }
 
 export function Logo({ size = 80 }: LogoProps) {

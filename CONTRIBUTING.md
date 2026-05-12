@@ -12,7 +12,7 @@ Gracias por tu interés. Este es un proyecto comunitario y open source.
 
 ```bash
 git clone <tu-fork>
-cd RappiOfertas
+cd Rappify
 npm install
 cp .env.example .env.local   # opcional pero recomendado para dev
 npm run dev

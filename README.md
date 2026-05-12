@@ -14,7 +14,7 @@ App 100% frontend, sin backend, open source.
 [![No Backend](https://img.shields.io/badge/no--backend-22c55e)](#-arquitectura)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-FF441F.svg)](./CONTRIBUTING.md)
 
-[**rappify.co**](https://rappify.co) · [Repo](https://github.com/Harkor421/RappiOfertas) · [Reportar bug](https://github.com/Harkor421/RappiOfertas/issues)
+[**rappify.co**](https://rappify.co) · [Repo](https://github.com/Harkor421/Rappify) · [Reportar bug](https://github.com/Harkor421/Rappify/issues)
 
 </div>
 
@@ -34,7 +34,7 @@ App 100% frontend, sin backend, open source.
 ## Quick start
 
 ```bash
-git clone https://github.com/Harkor421/RappiOfertas.git
+git clone https://github.com/Harkor421/Rappify.git
 cd RappiOfertas
 npm install
 npm run dev
@@ -139,6 +139,6 @@ PRs bienvenidos. Lee [CONTRIBUTING.md](./CONTRIBUTING.md) para empezar.
 
 <div align="center">
 
-⭐ Si te gusta el proyecto, dale una estrella en [GitHub](https://github.com/Harkor421/RappiOfertas)
+⭐ Si te gusta el proyecto, dale una estrella en [GitHub](https://github.com/Harkor421/Rappify)
 
 </div>
