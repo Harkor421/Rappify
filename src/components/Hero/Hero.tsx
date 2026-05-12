@@ -75,7 +75,7 @@ export function Hero({
         }}
       >
         <motion.div variants={fade}>
-          <Logo size={144} />
+          <Logo size={288} />
         </motion.div>
         <motion.h1 className={styles.title} variants={fade}>
           Rapp<span className={styles.titleAccent}>ify</span>
