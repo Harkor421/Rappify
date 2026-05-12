@@ -206,7 +206,7 @@ export function App() {
 
       <a
         className={styles.githubBtn}
-        href="https://github.com"
+        href="https://github.com/Harkor421/RappiOfertas"
         target="_blank"
         rel="noopener"
         aria-label="Ver en GitHub"
@@ -219,7 +219,7 @@ export function App() {
         <span className={styles.footerInner}>
           Hecho con <Heart size={12} strokeWidth={2.2} className={styles.heart} />
           <span className={styles.dot}>·</span>
-          <a href="https://github.com" target="_blank" rel="noopener">
+          <a href="https://github.com/Harkor421/RappiOfertas" target="_blank" rel="noopener">
             Open source
           </a>
           <span className={styles.dot}>·</span>
