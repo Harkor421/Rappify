@@ -20,6 +20,17 @@ export function cacheGet<T>(key: string, ttlMs: number): T | null {
   }
 }
 
+export function cacheGetEntry<T>(key: string): { value: T; t: number } | null {
+  try {
+    const raw = localStorage.getItem(PREFIX + key);
+    if (!raw) return null;
+    const entry = JSON.parse(raw) as Entry<T>;
+    return { value: entry.v, t: entry.t };
+  } catch {
+    return null;
+  }
+}
+
 export function cacheSet<T>(key: string, value: T): void {
   try {
     const entry: Entry<T> = { v: value, t: Date.now() };

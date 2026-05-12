@@ -37,7 +37,7 @@ export function Hero({
       >
         <div className={styles.compactInner}>
           <button type="button" className={styles.compactBrand} onClick={onGoHome}>
-            <Logo size={36} />
+            <Logo size={44} />
             <span className={styles.compactTitle}>Rappify</span>
           </button>
           <div className={styles.compactRight}>
@@ -75,7 +75,7 @@ export function Hero({
         }}
       >
         <motion.div variants={fade}>
-          <Logo size={96} />
+          <Logo size={144} />
         </motion.div>
         <motion.h1 className={styles.title} variants={fade}>
           Rapp<span className={styles.titleAccent}>ify</span>

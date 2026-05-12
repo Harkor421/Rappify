@@ -9,6 +9,7 @@ import { Hero } from "./components/Hero/Hero";
 import { LoadingState } from "./components/LoadingState/LoadingState";
 import { ProductGrid } from "./components/ProductGrid/ProductGrid";
 import { SettingsModal } from "./components/SettingsModal/SettingsModal";
+import { StaleBanner } from "./components/StaleBanner/StaleBanner";
 import { type Filters, Toolbar } from "./components/Toolbar/Toolbar";
 import { TopProgress } from "./components/TopProgress/TopProgress";
 import { GithubIcon, Heart, Settings } from "./components/icons";
@@ -46,7 +47,14 @@ export function App() {
   const [selected, setSelected] = useState<GeocodeResult | null>(null);
   const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [, setNowTick] = useState(0);
   const products = useProducts();
+
+  useEffect(() => {
+    if (products.dataAge == null) return;
+    const id = setInterval(() => setNowTick((n) => n + 1), 30_000);
+    return () => clearInterval(id);
+  }, [products.dataAge]);
 
   useEffect(() => {
     const saved = loadSavedLocation();
@@ -91,11 +99,10 @@ export function App() {
 
   const handleRefresh = () => {
     if (!selected) return;
-    void products.load({
-      ...DEFAULT_LOCATION,
-      lat: selected.lat,
-      lng: selected.lng,
-    });
+    void products.load(
+      { ...DEFAULT_LOCATION, lat: selected.lat, lng: selected.lng },
+      { force: true },
+    );
   };
 
   const phase: "stores" | "products" =
@@ -103,6 +110,11 @@ export function App() {
   const isLoading =
     products.state === "loading-stores" || products.state === "loading-products";
   const hasData = products.products.length > 0;
+  const STALE_THRESHOLD_MS = 5 * 60 * 1000;
+  const ageMs = products.dataAge ? Date.now() - products.dataAge : 0;
+  const isStale =
+    products.dataAge != null && hasData && !isLoading && ageMs > STALE_THRESHOLD_MS;
+  const ageMinutes = Math.floor(ageMs / 60_000);
 
   return (
     <>
@@ -142,6 +154,13 @@ export function App() {
               visible={isLoading}
               phase={phase}
               progress={products.progress}
+            />
+
+            <StaleBanner
+              visible={isStale}
+              ageMinutes={ageMinutes}
+              refreshing={isLoading}
+              onRefresh={handleRefresh}
             />
 
             {hasData && (

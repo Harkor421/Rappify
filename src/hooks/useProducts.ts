@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { cacheGetEntry, cacheSet } from "../api/cache";
 import { fetchProducts, fetchStores, RappiAuthError } from "../api/rappi";
 import { DEFAULT_LOCATION, FETCH_CONCURRENCY } from "../config";
 import type { FetchProgress, Location, Product } from "../types/rappi";
@@ -11,8 +12,13 @@ export interface UseProductsResult {
   progress: FetchProgress | null;
   error: string | null;
   isAuthError: boolean;
-  load: (location: Location) => Promise<void>;
+  dataAge: number | null;
+  load: (location: Location, opts?: { force?: boolean }) => Promise<void>;
   reset: () => void;
+}
+
+function productsCacheKey(loc: Location): string {
+  return `products:${loc.lat.toFixed(5)},${loc.lng.toFixed(5)}`;
 }
 
 export function useProducts(): UseProductsResult {
@@ -21,6 +27,7 @@ export function useProducts(): UseProductsResult {
   const [progress, setProgress] = useState<FetchProgress | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isAuthError, setIsAuthError] = useState(false);
+  const [dataAge, setDataAge] = useState<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(
@@ -37,18 +44,34 @@ export function useProducts(): UseProductsResult {
     setProgress(null);
     setError(null);
     setIsAuthError(false);
+    setDataAge(null);
   }, []);
 
-  const load = useCallback(async (loc: Location) => {
+  const load = useCallback(async (loc: Location, opts: { force?: boolean } = {}) => {
     abortRef.current?.abort();
     const ctrl = new AbortController();
     abortRef.current = ctrl;
+    const location: Location = { ...DEFAULT_LOCATION, lat: loc.lat, lng: loc.lng };
+    const cacheKey = productsCacheKey(location);
+
+    if (!opts.force) {
+      const cached = cacheGetEntry<Product[]>(cacheKey);
+      if (cached?.value && Array.isArray(cached.value) && cached.value.length > 0) {
+        setProducts(cached.value);
+        setDataAge(cached.t);
+        setProgress(null);
+        setError(null);
+        setIsAuthError(false);
+        setState("ready");
+        return;
+      }
+    }
+
     setError(null);
     setIsAuthError(false);
     setProgress(null);
     setState("loading-stores");
     try {
-      const location: Location = { ...DEFAULT_LOCATION, lat: loc.lat, lng: loc.lng };
       const stores = await fetchStores(location);
       if (ctrl.signal.aborted) return;
       setState("loading-products");
@@ -64,7 +87,10 @@ export function useProducts(): UseProductsResult {
       const sorted = result.products.sort(
         (a, b) => b.discount_percentage - a.discount_percentage,
       );
+      const now = Date.now();
+      cacheSet(cacheKey, sorted);
       setProducts(sorted);
+      setDataAge(now);
       setState("ready");
     } catch (e) {
       if (ctrl.signal.aborted) return;
@@ -75,5 +101,5 @@ export function useProducts(): UseProductsResult {
     }
   }, []);
 
-  return { state, products, progress, error, isAuthError, load, reset };
+  return { state, products, progress, error, isAuthError, dataAge, load, reset };
 }
