@@ -8,6 +8,14 @@
   width: 100%;
 }
 
+.gridItem {
+  display: flex;
+  min-width: 0;
+}
+.gridItem > * {
+  width: 100%;
+}
+
 .empty {
   text-align: center;
   padding: 100px 24px;

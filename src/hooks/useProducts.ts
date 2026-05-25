@@ -70,6 +70,8 @@ export function useProducts(): UseProductsResult {
     setError(null);
     setIsAuthError(false);
     setProgress(null);
+    setProducts([]);
+    setDataAge(null);
     setState("loading-stores");
     try {
       const stores = await fetchStores(location);
@@ -80,6 +82,16 @@ export function useProducts(): UseProductsResult {
         concurrency: FETCH_CONCURRENCY,
         onProgress: (p) => {
           if (!ctrl.signal.aborted) setProgress(p);
+        },
+        onBatch: (partial) => {
+          if (ctrl.signal.aborted) return;
+          // Sort each partial batch so the user sees the top deals first
+          // even mid-fetch. Sort is O(n log n) on a few hundred items —
+          // dwarfed by the network cost it's overlapping with.
+          const sorted = [...partial].sort(
+            (a, b) => b.discount_percentage - a.discount_percentage,
+          );
+          setProducts(sorted);
         },
         signal: ctrl.signal,
       });
