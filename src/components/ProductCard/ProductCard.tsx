@@ -20,7 +20,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
   return (
     <motion.a
-      href={product.store_url}
+      href={product.product_url}
       target="_blank"
       rel="noopener"
       className={`${styles.card} ${isHot ? styles.hot : ""}`}

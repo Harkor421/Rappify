@@ -140,9 +140,12 @@ function shapeStore(s: RawStore): Store {
   const lat = Array.isArray(s.location) ? s.location[1] : null;
   const lng = Array.isArray(s.location) ? s.location[0] : null;
   const slug = s.friendly_url?.friendly_url;
+  // rappi.com.co route shape is /restaurantes/{store_id}-{slug}.
+  // Previously we built /restaurantes/restaurante/{slug}-{store_id}, which
+  // 404'd on every store. See issue #5.
   const url = slug
-    ? `${RAPPI_WEB}/restaurantes/restaurante/${slug}-${s.store_id}`
-    : `${RAPPI_WEB}/restaurantes/restaurante/${s.store_id}`;
+    ? `${RAPPI_WEB}/restaurantes/${s.store_id}-${slug}`
+    : `${RAPPI_WEB}/restaurantes/${s.store_id}`;
 
   return {
     store_id: s.store_id,
@@ -198,6 +201,7 @@ function shapeProduct(p: RawProduct, store: Store, categories: string[]): Produc
     store_brand: store.brand,
     store_logo: store.logo,
     store_url: store.url,
+    product_url: `${store.url}?productDetail=${p.product_id}`,
     store_eta: store.eta,
     store_distance_m: store.distance_m,
     store_rating: store.rating,
