@@ -152,6 +152,7 @@ export interface Product {
   store_brand: string | undefined;
   store_logo: string | null;
   store_url: string;
+  product_url: string;
   store_eta: string | undefined;
   store_distance_m: number | null;
   store_rating: number;
