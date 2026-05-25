@@ -1,8 +1,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { clearCredentials, getCredentials, saveCredentials } from "../../api/credentials";
+import {
+  clearCredentials,
+  getCredentials,
+  refreshToken,
+  saveCredentials,
+} from "../../api/credentials";
 import { cacheClear } from "../../api/cache";
 import styles from "./SettingsModal.module.css";
+
+type RefreshStatus = { kind: "ok" | "noop" | "fail"; message: string };
 
 interface SettingsModalProps {
   open: boolean;
@@ -14,6 +21,8 @@ export function SettingsModal({ open, onClose, onSaved }: SettingsModalProps) {
   const [auth, setAuth] = useState("");
   const [device, setDevice] = useState("");
   const [version, setVersion] = useState("1.161.2");
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshStatus, setRefreshStatus] = useState<RefreshStatus | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -21,8 +30,35 @@ export function SettingsModal({ open, onClose, onSaved }: SettingsModalProps) {
       setAuth(c?.authorization ?? "");
       setDevice(c?.deviceid ?? "");
       setVersion(c?.app_version ?? "1.161.2");
+      setRefreshStatus(null);
     }
   }, [open]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    setRefreshStatus(null);
+    const before = getCredentials()?.authorization ?? "";
+    const result = await refreshToken();
+    setRefreshing(false);
+    if (!result) {
+      setRefreshStatus({
+        kind: "fail",
+        message: "No se pudo refrescar. El token puede estar expirado — pégalo manualmente.",
+      });
+      return;
+    }
+    if (result.authorization !== before) {
+      setAuth(result.authorization);
+      cacheClear();
+      onSaved?.();
+      setRefreshStatus({ kind: "ok", message: "Token actualizado." });
+    } else {
+      setRefreshStatus({
+        kind: "noop",
+        message: "Sesión vigente, pero el servidor no devolvió un token nuevo.",
+      });
+    }
+  };
 
   const handleSave = () => {
     if (!auth.trim() || !device.trim()) return;
@@ -118,6 +154,13 @@ export function SettingsModal({ open, onClose, onSaved }: SettingsModalProps) {
                 Borrar y limpiar caché
               </button>
               <button
+                className={styles.btnGhost}
+                onClick={handleRefresh}
+                disabled={refreshing || !auth.trim() || !device.trim()}
+              >
+                {refreshing ? "Refrescando…" : "Refrescar token"}
+              </button>
+              <button
                 className={styles.btnPrimary}
                 onClick={handleSave}
                 disabled={!auth.trim() || !device.trim()}
@@ -125,6 +168,15 @@ export function SettingsModal({ open, onClose, onSaved }: SettingsModalProps) {
                 Guardar
               </button>
             </div>
+            {refreshStatus && (
+              <p
+                className={styles.refreshStatus}
+                data-kind={refreshStatus.kind}
+                role="status"
+              >
+                {refreshStatus.message}
+              </p>
+            )}
           </motion.div>
         </motion.div>
       )}

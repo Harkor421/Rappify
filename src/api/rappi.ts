@@ -13,7 +13,7 @@ import type {
 } from "../types/rappi";
 import { runWithConcurrency } from "../utils/concurrency";
 import { cacheGet, cacheSet } from "./cache";
-import { buildHeaders, getCredentials } from "./credentials";
+import { buildHeaders, getCredentials, refreshToken } from "./credentials";
 
 export class RappiAuthError extends Error {
   constructor(message: string) {
@@ -36,16 +36,28 @@ function requireCreds(): RappiCredentials {
 }
 
 async function postJson<T>(url: string, body: unknown): Promise<T> {
-  const creds = requireCreds();
-  const res = await fetch(url, {
+  const payload = JSON.stringify(body);
+  let creds = requireCreds();
+  let res = await fetch(url, {
     method: "POST",
     headers: buildHeaders(creds),
-    body: JSON.stringify(body),
+    body: payload,
   });
   if (res.status === 401 || res.status === 403) {
-    throw new RappiAuthError(
-      "El token de Rappi expiró o es inválido. Actualízalo en ajustes.",
-    );
+    const refreshed = await refreshToken();
+    if (refreshed) {
+      creds = refreshed;
+      res = await fetch(url, {
+        method: "POST",
+        headers: buildHeaders(creds),
+        body: payload,
+      });
+    }
+    if (res.status === 401 || res.status === 403) {
+      throw new RappiAuthError(
+        "El token de Rappi expiró o es inválido. Actualízalo en ajustes.",
+      );
+    }
   }
   if (!res.ok) {
     const text = await res.text();
