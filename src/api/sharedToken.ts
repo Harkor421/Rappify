@@ -5,6 +5,11 @@ interface SharedPayload extends RappiCredentials {
   updated_at?: string;
 }
 
+export interface SharedCredentials {
+  creds: RappiCredentials;
+  updated_at: string | null;
+}
+
 function rawUrl(): string {
   const { owner, id, filename } = SHARED_TOKEN_GIST;
   // Cache-bust per minute so a refresh published by one client propagates
@@ -23,7 +28,7 @@ function isValid(payload: unknown): payload is SharedPayload {
   );
 }
 
-export async function fetchSharedCredentials(): Promise<RappiCredentials | null> {
+export async function fetchSharedCredentials(): Promise<SharedCredentials | null> {
   if (!SHARED_TOKEN_GIST.id) return null;
   try {
     const res = await fetch(rawUrl(), { cache: "no-store" });
@@ -31,9 +36,12 @@ export async function fetchSharedCredentials(): Promise<RappiCredentials | null>
     const data = (await res.json()) as unknown;
     if (!isValid(data)) return null;
     return {
-      authorization: data.authorization,
-      deviceid: data.deviceid,
-      app_version: data.app_version,
+      creds: {
+        authorization: data.authorization,
+        deviceid: data.deviceid,
+        app_version: data.app_version,
+      },
+      updated_at: data.updated_at ?? null,
     };
   } catch {
     return null;

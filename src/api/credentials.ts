@@ -5,17 +5,25 @@ import { fetchSharedCredentials, publishSharedCredentials } from "./sharedToken"
 const CREDS_KEY = "rappify:credentials";
 const AUTH_ENDPOINT = "https://services.grability.rappi.com/ms/application-user/auth";
 
+interface StoredCreds extends RappiCredentials {
+  saved_at?: string;
+}
+
 // In-memory cache of the latest credentials seen on the shared gist.
 // Hydrated once at boot via hydrateSharedCredentials(); subsequent reads
 // from getCredentials() prefer this over the bundled FALLBACK_CREDENTIALS
 // so a token refresh by one client propagates to all clients.
 let sharedDefault: RappiCredentials | null = null;
+let sharedUpdatedAt: string | null = null;
 let hydrationPromise: Promise<void> | null = null;
 
 export function hydrateSharedCredentials(): Promise<void> {
   if (!hydrationPromise) {
     hydrationPromise = fetchSharedCredentials().then((remote) => {
-      if (remote) sharedDefault = remote;
+      if (remote) {
+        sharedDefault = remote.creds;
+        sharedUpdatedAt = remote.updated_at;
+      }
     });
   }
   return hydrationPromise;
@@ -29,10 +37,31 @@ function defaultCredentials(): RappiCredentials {
   return sharedDefault ?? FALLBACK_CREDENTIALS;
 }
 
+function ts(value: string | null | undefined): number {
+  if (!value) return 0;
+  const n = Date.parse(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
 export function getCredentials(): RappiCredentials | null {
   try {
     const raw = localStorage.getItem(CREDS_KEY);
-    if (raw) return JSON.parse(raw) as RappiCredentials;
+    if (raw) {
+      const stored = JSON.parse(raw) as StoredCreds;
+      // If the shared gist has been updated more recently than the user's
+      // local override, the shared value wins. This lets the admin push a
+      // new token via the gist and have non-tech-savvy users pick it up
+      // automatically, even if they once tapped Save in the modal with
+      // an old token.
+      if (sharedDefault && ts(sharedUpdatedAt) > ts(stored.saved_at)) {
+        return sharedDefault;
+      }
+      return {
+        authorization: stored.authorization,
+        deviceid: stored.deviceid,
+        app_version: stored.app_version,
+      };
+    }
   } catch {
     /* fall through */
   }
@@ -40,7 +69,8 @@ export function getCredentials(): RappiCredentials | null {
 }
 
 export function saveCredentials(creds: RappiCredentials): void {
-  localStorage.setItem(CREDS_KEY, JSON.stringify(creds));
+  const stored: StoredCreds = { ...creds, saved_at: new Date().toISOString() };
+  localStorage.setItem(CREDS_KEY, JSON.stringify(stored));
 }
 
 export function clearCredentials(): void {
