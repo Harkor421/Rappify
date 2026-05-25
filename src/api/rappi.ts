@@ -343,10 +343,19 @@ export async function fetchProducts(
     location?: Location;
     concurrency?: number;
     onProgress?: (p: FetchProgress) => void;
+    onBatch?: (products: Product[]) => void;
+    batchSize?: number;
     signal?: AbortSignal;
   } = {},
 ): Promise<FetchProductsResult> {
-  const { location = DEFAULT_LOCATION, concurrency = 6, onProgress, signal } = options;
+  const {
+    location = DEFAULT_LOCATION,
+    concurrency = 6,
+    onProgress,
+    onBatch,
+    batchSize = 20,
+    signal,
+  } = options;
   const byBrand = new Map<number, Store[]>();
   for (const s of stores) {
     if (!s.brand_id) continue;
@@ -358,6 +367,15 @@ export async function fetchProducts(
   const products: Product[] = [];
   let done = 0;
   let errors = 0;
+  let pendingBatch = 0;
+
+  const emitBatch = (final: boolean): void => {
+    if (!onBatch) return;
+    if (final || pendingBatch >= batchSize) {
+      onBatch(products.slice());
+      pendingBatch = 0;
+    }
+  };
 
   await runWithConcurrency(
     brandIds,
@@ -368,17 +386,23 @@ export async function fetchProducts(
         const owners = byBrand.get(brandId);
         if (!owners?.length) return;
         const owner = owners[0]!;
-        products.push(...extractDiscountedProducts(data, owner));
+        const extracted = extractDiscountedProducts(data, owner);
+        if (extracted.length > 0) {
+          products.push(...extracted);
+          pendingBatch += extracted.length;
+        }
       } catch (e) {
         if (e instanceof RappiAuthError) throw e;
         errors++;
       } finally {
         done++;
         onProgress?.({ done, total: brandIds.length, errors });
+        emitBatch(false);
       }
     },
     concurrency,
   );
 
+  emitBatch(true);
   return { products, total_brands: brandIds.length, errors };
 }

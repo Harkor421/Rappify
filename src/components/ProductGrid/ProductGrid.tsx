@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { forwardRef, useMemo, type CSSProperties, type ReactNode } from "react";
+import { VirtuosoGrid } from "react-virtuoso";
 import type { Product } from "../../types/rappi";
 import { ProductCard } from "../ProductCard/ProductCard";
 import type { Filters, SortMode } from "../Toolbar/Toolbar";
@@ -17,6 +18,20 @@ const COMPARATORS: Record<SortMode, (a: Product, b: Product) => number> = {
   rating: (a, b) => b.store_rating - a.store_rating,
   popular: (a, b) => Number(b.is_popular) - Number(a.is_popular),
 };
+
+const GridList = forwardRef<HTMLDivElement, { style?: CSSProperties; children?: ReactNode }>(
+  function GridList({ style, children, ...rest }, ref) {
+    return (
+      <div ref={ref} {...rest} className={styles.grid} style={style}>
+        {children}
+      </div>
+    );
+  },
+);
+
+function GridItem({ children }: { children?: ReactNode }) {
+  return <div className={styles.gridItem}>{children}</div>;
+}
 
 export function ProductGrid({ products, filters }: ProductGridProps) {
   const filtered = useMemo(() => {
@@ -46,10 +61,17 @@ export function ProductGrid({ products, filters }: ProductGridProps) {
   }
 
   return (
-    <div className={styles.grid}>
-      {filtered.map((p, i) => (
-        <ProductCard key={p.id} product={p} index={i} />
-      ))}
-    </div>
+    <VirtuosoGrid
+      useWindowScroll
+      totalCount={filtered.length}
+      overscan={400}
+      components={{ List: GridList, Item: GridItem }}
+      computeItemKey={(index) => filtered[index]?.id ?? index}
+      itemContent={(index) => {
+        const product = filtered[index];
+        if (!product) return null;
+        return <ProductCard product={product} index={index} />;
+      }}
+    />
   );
 }
