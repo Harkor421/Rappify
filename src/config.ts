@@ -47,3 +47,19 @@ export const FALLBACK_CREDENTIALS: RappiCredentials = {
   deviceid: env.VITE_RAPPI_DEVICEID || DEFAULT_CREDENTIALS.deviceid,
   app_version: env.VITE_RAPPI_APP_VERSION || DEFAULT_CREDENTIALS.app_version,
 };
+
+// Shared-credentials sync: every client reads the bearer token from a
+// GitHub Gist on boot and writes back when /ms/application-user/auth
+// hands out a fresh one. This lets a single account power all visitors
+// without each of them re-pasting after a token rotation.
+//
+// The gist is "secret" (unlisted) — only people with the URL can read.
+// VITE_GIST_WRITE_TOKEN is a fine-grained PAT scoped to gists-only; if
+// it leaks the worst-case is someone editing this single gist, which
+// the next client refresh would correct anyway.
+export const SHARED_TOKEN_GIST = {
+  id: env.VITE_GIST_ID || "4020d5887f922fff218c5d0ef0d33db9",
+  filename: env.VITE_GIST_FILE || "rappify-shared-credentials.json",
+  owner: env.VITE_GIST_OWNER || "Harkor421",
+  writeToken: env.VITE_GIST_WRITE_TOKEN || "",
+} as const;

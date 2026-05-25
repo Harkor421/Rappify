@@ -13,7 +13,12 @@ import type {
 } from "../types/rappi";
 import { runWithConcurrency } from "../utils/concurrency";
 import { cacheGet, cacheSet } from "./cache";
-import { buildHeaders, getCredentials, refreshToken } from "./credentials";
+import {
+  buildHeaders,
+  ensureSharedCredentialsReady,
+  getCredentials,
+  refreshToken,
+} from "./credentials";
 
 export class RappiAuthError extends Error {
   constructor(message: string) {
@@ -36,6 +41,7 @@ function requireCreds(): RappiCredentials {
 }
 
 async function postJson<T>(url: string, body: unknown): Promise<T> {
+  await ensureSharedCredentialsReady();
   const payload = JSON.stringify(body);
   let creds = requireCreds();
   let res = await fetch(url, {

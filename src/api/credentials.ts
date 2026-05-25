@@ -1,8 +1,33 @@
 import { FALLBACK_CREDENTIALS } from "../config";
 import type { RappiCredentials } from "../types/rappi";
+import { fetchSharedCredentials, publishSharedCredentials } from "./sharedToken";
 
 const CREDS_KEY = "rappify:credentials";
 const AUTH_ENDPOINT = "https://services.grability.rappi.com/ms/application-user/auth";
+
+// In-memory cache of the latest credentials seen on the shared gist.
+// Hydrated once at boot via hydrateSharedCredentials(); subsequent reads
+// from getCredentials() prefer this over the bundled FALLBACK_CREDENTIALS
+// so a token refresh by one client propagates to all clients.
+let sharedDefault: RappiCredentials | null = null;
+let hydrationPromise: Promise<void> | null = null;
+
+export function hydrateSharedCredentials(): Promise<void> {
+  if (!hydrationPromise) {
+    hydrationPromise = fetchSharedCredentials().then((remote) => {
+      if (remote) sharedDefault = remote;
+    });
+  }
+  return hydrationPromise;
+}
+
+export function ensureSharedCredentialsReady(): Promise<void> {
+  return hydrateSharedCredentials();
+}
+
+function defaultCredentials(): RappiCredentials {
+  return sharedDefault ?? FALLBACK_CREDENTIALS;
+}
 
 export function getCredentials(): RappiCredentials | null {
   try {
@@ -11,7 +36,7 @@ export function getCredentials(): RappiCredentials | null {
   } catch {
     /* fall through */
   }
-  return FALLBACK_CREDENTIALS;
+  return defaultCredentials();
 }
 
 export function saveCredentials(creds: RappiCredentials): void {
@@ -70,6 +95,10 @@ export async function refreshToken(): Promise<RappiCredentials | null> {
       authorization: refreshed.startsWith("Bearer ") ? refreshed : `Bearer ${refreshed}`,
     };
     saveCredentials(next);
+    sharedDefault = next;
+    // Fire-and-forget: push to shared gist so other clients pick it up
+    // on their next boot (or within ~60s cache-bust window).
+    void publishSharedCredentials(next);
     return next;
   }
   return current;
