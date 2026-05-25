@@ -3,7 +3,12 @@ interface Entry<T> {
   t: number;
 }
 
-const PREFIX = "rappify:";
+// Bump the version segment whenever the shape of a cached value changes
+// in an incompatible way. Old entries under previous prefixes are simply
+// ignored (and will be pruned the next time we hit quota).
+//
+// v2: added Product.product_url (issue #5 — old entries link to 404 URLs).
+const PREFIX = "rappify:v2:";
 
 export function cacheGet<T>(key: string, ttlMs: number): T | null {
   try {
@@ -54,7 +59,9 @@ export function cacheClear(): void {
   const keys: string[] = [];
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i);
-    if (k?.startsWith(PREFIX)) keys.push(k);
+    // Match the active prefix plus any historical "rappify:..." entry
+    // so legacy versions are swept when the user hits "Borrar caché".
+    if (k?.startsWith(PREFIX) || k?.startsWith("rappify:")) keys.push(k);
   }
   keys.forEach((k) => localStorage.removeItem(k));
 }
