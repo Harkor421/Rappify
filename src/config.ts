@@ -36,9 +36,9 @@ export const FETCH_CONCURRENCY = 6;
 // or via the in-app Settings modal (which writes to localStorage).
 const DEFAULT_CREDENTIALS: RappiCredentials = {
   authorization:
-    "Bearer ft.gAAAAABqE_XPbM-8vlYGD8hpV4H_Nw6IStMQ8aP6fzsm3tVG0OgoxfjxSWhSo4bOx82eL6wjSNyytUEzqzmOBXKjMUubGNJ6-nDR1A1n0Jlaanux2-_mbFxCjOfM9do_ofnZUwMxwh_4qzaN6InTaiUKkxCKm5TIoTHS7vjWwsdoqGSsH1BIWjCdSuCAK8EBYcg6MGVif4rqFNRk0aTkTpTrs2T1KY5WX4t2jOYZT8AlLz41hUBDTrkv0uwK_NypAQq0fNshZOJ1f594oX4sg-agzPOPfC7WXp76lRDPQVd4O6zxzV8F_1ctqoiU7iOkOpnXhCznu5RudrlB62pVj-NNIFeL3IJAVrLA8bBHdMVvVZ_dcPm55jD16PhoH3KUX8EkADY1juYxaxYKsQWFLuqD8m1UtPO5sw==",
-  deviceid: "de1f3359-277e-4239-832a-b9165fa80e1a",
-  app_version: "1.161.2",
+    "Bearer ft.gAAAAABqH2ILKUMRhFFx5duGvx6m-ftzomB8se22UIBdYxqHKRZRZat0GGBzACQtktvt2r9D0-cM7lg6FYen1TPvG5FUUuQIQMcsVB538e8CIzjMDKGfjh8FMtpmZ5Jft6HJqrFLfei1u8SOoBPaNOzRaVQomUZwQvFfQlSlgEWlCNf8hebOIn6sAMHtfSw6HT9rprJiMJ83YIX8rSHETwUSxrcbomM663ZDVJ-qqV7xI1L3MbdBKHUWG8-zMZDAz8Y0-nvVXtEO0uPFztexDX0c-4X9V75jV8yj0gy_5bvkFgrVTB9PkIcM9Q7yxbMlFHNd9HEPy66BK5IGxD_ZDdFzk3Vepk5-N7F_vtKIRoxv-u2rpkbCHqODpFYpfp9VnVgBlSs19ixBXc9VawbBZDga2mFS7V7eUA==",
+  deviceid: "a61c9d41-4e2f-460b-a5ce-378c3baf4212",
+  app_version: "1.156.0",
 };
 
 const env = import.meta.env;
