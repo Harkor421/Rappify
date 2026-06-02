@@ -120,6 +120,16 @@ export function refreshToken(): Promise<RappiCredentials | null> {
   return refreshInFlight;
 }
 
+// Filters out the X-Refresh-Token "flag" the gateway returns on 401 — the
+// value is literally the string "true" (or "false"), not a bearer. A real
+// Rappi token is ~400 chars and starts with "ft.". Without this guard the
+// app would have happily saved `Bearer true` and locked the user out.
+function isRealBearer(value: string | null): value is string {
+  if (!value) return false;
+  const stripped = value.replace(/^Bearer\s+/i, "").trim();
+  return stripped.startsWith("ft.") && stripped.length >= 100;
+}
+
 async function doRefresh(): Promise<RappiCredentials | null> {
   const current = getCredentials();
   if (!current?.authorization || !current?.deviceid) return null;
@@ -132,7 +142,7 @@ async function doRefresh(): Promise<RappiCredentials | null> {
   if (res.status === 401 || res.status === 403) return null;
   if (!res.ok) return null;
   const refreshed = res.headers.get("X-Refresh-Token") || res.headers.get("x-refresh-token");
-  if (refreshed && refreshed.trim()) {
+  if (isRealBearer(refreshed)) {
     const next: RappiCredentials = {
       ...current,
       authorization: refreshed.startsWith("Bearer ") ? refreshed : `Bearer ${refreshed}`,
