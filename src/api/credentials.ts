@@ -106,8 +106,21 @@ export function buildHeaders(creds: RappiCredentials): Record<string, string> {
  * Calls /ms/application-user/auth. The endpoint exposes X-Refresh-Token via CORS;
  * when present, we adopt it as the new Bearer token. Returns the credentials in
  * use after the call (refreshed or original), or null if the call failed/expired.
+ *
+ * Concurrent callers share the same in-flight promise so 168 parallel brand
+ * fetches all hitting a 401 only trigger one refresh, not 168.
  */
-export async function refreshToken(): Promise<RappiCredentials | null> {
+let refreshInFlight: Promise<RappiCredentials | null> | null = null;
+
+export function refreshToken(): Promise<RappiCredentials | null> {
+  if (refreshInFlight) return refreshInFlight;
+  refreshInFlight = doRefresh().finally(() => {
+    refreshInFlight = null;
+  });
+  return refreshInFlight;
+}
+
+async function doRefresh(): Promise<RappiCredentials | null> {
   const current = getCredentials();
   if (!current?.authorization || !current?.deviceid) return null;
   let res: Response;
@@ -132,4 +145,48 @@ export async function refreshToken(): Promise<RappiCredentials | null> {
     return next;
   }
   return current;
+}
+
+/**
+ * Proactive token refresh. Keeps the bearer alive while anyone uses the app
+ * within its TTL: refreshes on boot, every 10 min on a timer, and whenever
+ * the tab regains focus / visibility (covers users coming back after a
+ * while). A 60s cooldown prevents back-to-back refreshes.
+ *
+ * Idempotent — calling twice is a no-op. Returns a teardown function for
+ * tests / hot-reload.
+ */
+const REFRESH_INTERVAL_MS = 10 * 60 * 1000;
+const REFRESH_COOLDOWN_MS = 60 * 1000;
+let autoRefreshStarted = false;
+let lastRefreshAttempt = 0;
+
+export function startTokenAutoRefresh(): () => void {
+  if (autoRefreshStarted || typeof window === "undefined") return () => {};
+  autoRefreshStarted = true;
+
+  const tryRefresh = (): void => {
+    if (Date.now() - lastRefreshAttempt < REFRESH_COOLDOWN_MS) return;
+    lastRefreshAttempt = Date.now();
+    void refreshToken();
+  };
+
+  const intervalId = setInterval(tryRefresh, REFRESH_INTERVAL_MS);
+  const onFocus = (): void => tryRefresh();
+  const onVisibility = (): void => {
+    if (document.visibilityState === "visible") tryRefresh();
+  };
+  window.addEventListener("focus", onFocus);
+  document.addEventListener("visibilitychange", onVisibility);
+
+  // Initial refresh on boot — bundled fallback / cached gist value may be
+  // hours or days old; one cheap GET makes sure we start with a fresh one.
+  tryRefresh();
+
+  return () => {
+    clearInterval(intervalId);
+    window.removeEventListener("focus", onFocus);
+    document.removeEventListener("visibilitychange", onVisibility);
+    autoRefreshStarted = false;
+  };
 }
